@@ -1,0 +1,6 @@
+{"original": "The committee postponed its decision until additional evidence could be gathered.", "output": "The committee waited for more evidence before deciding.", "score": 4.6}
+{"original": "The committee postponed its decision until additional evidence could be gathered.", "output": "The committee postponed its decision.", "score": 3.1}
+{"original": "The committee postponed its decision until additional evidence could be gathered.", "output": "Evidence committee gathered postponed.", "score": 1.4}
+{"original": "The physician recommended that the patient refrain from strenuous physical activity.", "output": "The doctor told the patient not to exercise hard.", "score": 4.8}
+{"original": "The physician recommended that the patient refrain from strenuous physical activity.", "output": "The physician recommended that the patient refrain from activity.", "score": 3.0}
+{"original": "The physician recommended that the patient refrain from strenuous physical activity.", "output": "The patient is very strong.", "score": 1.2}

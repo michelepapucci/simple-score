@@ -1,0 +1,21 @@
+# Appendix A ablation on DeBERTa-v3-base: pairwise loss = thurstone, regression loss = none.
+# Settings of the paper's ablation runs (2 GPUs without gradient sync -> one GPU,
+# batch 16, half of the data per epoch; max_length 256; regression batch 16).
+model:
+  backbone: microsoft/deberta-v3-base
+  max_length: 256
+training:
+  epochs: 5
+  batch_size: 16
+  regression_batch_size: 16
+  lr: 1.0e-5
+  pairwise_loss: thurstone
+  regression_loss: none
+  lambda_reg: 0.0
+  epoch_fraction: 0.5
+  select_on: monitor:simpeval2022
+data: ../../data/paper/data.yaml
+monitor:
+  - {path: ../../data/paper/monitor/simpeval2022_pairs.tsv, kind: pairwise, name: simpeval2022}
+  - {path: ../../data/paper/monitor/simpeval2022_ratings.tsv, kind: ratings, name: simpeval2022_ratings}
+output_dir: runs/ablations/thurstone-only

@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simple-metric"
+dynamic = ["version"]
+description = "SIMPLE: a reference-free learned metric for text simplification that also reports its own uncertainty."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Michele Papucci" }]
+keywords = ["text simplification", "evaluation", "metric", "nlp", "preference learning"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "torch>=1.13",
+    "transformers>=4.38",
+    "huggingface_hub>=0.20",
+    "safetensors>=0.4",
+    "numpy",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+# Training needs YAML configs, and the slow->fast tokenizer conversion of the
+# Hub DeBERTa-v3 backbones needs sentencepiece + protobuf.
+train = ["pyyaml>=6.0", "sentencepiece", "protobuf"]
+# Optional readers: Parquet files and Hugging Face Hub datasets.
+data = ["pyarrow", "datasets"]
+dev = ["pytest", "ruff", "build", "pyyaml>=6.0", "sentencepiece", "protobuf"]
+
+[project.scripts]
+simple-metric = "simple_metric.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/michelepapucci/simple-metric"
+Models = "https://huggingface.co/mpapucci"
+
+[tool.setuptools.dynamic]
+version = { attr = "simple_metric._version.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "B905"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

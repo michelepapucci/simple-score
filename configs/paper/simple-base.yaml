@@ -1,0 +1,20 @@
+# SIMPLE-base as trained for the paper (DeBERTa-v3-base).
+# The paper run used 2 GPUs, but its gradients were never synchronised across them, so
+# the released model is what one GPU learned: batch 16, and each epoch a random half of
+# the data. Run this config on ONE GPU to reproduce it (epoch_fraction: 0.5).
+model:
+  backbone: microsoft/deberta-v3-base
+  max_length: 512
+training:
+  epochs: 5
+  batch_size: 16
+  regression_batch_size: 32
+  lr: 1.0e-5
+  lambda_reg: 0.7
+  epoch_fraction: 0.5
+  select_on: monitor:simpeval2022   # recommended for new models: val_inter
+data: ../../data/paper/data.yaml
+monitor:
+  - {path: ../../data/paper/monitor/simpeval2022_pairs.tsv, kind: pairwise, name: simpeval2022}
+  - {path: ../../data/paper/monitor/simpeval2022_ratings.tsv, kind: ratings, name: simpeval2022_ratings}
+output_dir: runs/paper/simple-base

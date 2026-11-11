@@ -1,0 +1,28 @@
+# A runnable toy configuration showing every data kind. The sentences are made up.
+#   simple-metric build-data --config examples/toy.yaml --dry-run
+#   simple-metric train --config examples/toy.yaml --set model.backbone=microsoft/deberta-v3-small
+model:
+  backbone: microsoft/deberta-v3-base
+  max_length: 128
+training:
+  epochs: 2
+  batch_size: 4
+  regression_batch_size: 4
+  lr: 2.0e-5
+  num_workers: 0
+data:
+  parallel:
+    - {path: data/parallel.tsv, columns: {source: complex, simplification: simple}}
+  graded:
+    - {path: data/graded.csv, min_level_gap: 2}
+  ratings:
+    # columns found by alias: original -> source, output -> candidate, score -> rating
+    - {path: data/ratings.jsonl, scale: [1, 5]}
+  preferences:
+    - data/preferences.tsv
+  augmentation:
+    copy_anchors: 8
+    adversarial_anchors: 8
+  validation:
+    fraction: 0.25
+output_dir: runs/toy

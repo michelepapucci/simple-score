@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIMPLE metric</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232457c5'/%3E%3Cpath d='M8 21h16M8 15h11M8 9h16' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta name="description" content="SIMPLE: a reference-free metric for sentence simplification that also reports its own uncertainty. Try it in your browser.">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f7f7f4;
+    --surface: #ffffff;
+    --surface-2: #f0f0eb;
+    --text: #1c1d1f;
+    --muted: #5d6066;
+    --border: #dcdcd5;
+    --accent: #2457c5;
+    --accent-text: #ffffff;
+    --good: #1f8a4c;
+    --bad: #c2412d;
+    --neutral: #8a8d93;
+    --band: rgba(36, 87, 197, 0.18);
+    --code-bg: #f0f0eb;
+    --focus: #2457c5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #141517;
+      --surface: #1c1d20;
+      --surface-2: #25262a;
+      --text: #ececea;
+      --muted: #a2a5ab;
+      --border: #34363b;
+      --accent: #7aa2ff;
+      --accent-text: #0e1220;
+      --good: #4cc27f;
+      --bad: #f0806c;
+      --neutral: #8f939a;
+      --band: rgba(122, 162, 255, 0.22);
+      --code-bg: #25262a;
+      --focus: #7aa2ff;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #141517; --surface: #1c1d20; --surface-2: #25262a; --text: #ececea; --muted: #a2a5ab;
+    --border: #34363b; --accent: #7aa2ff; --accent-text: #0e1220; --good: #4cc27f; --bad: #f0806c;
+    --neutral: #8f939a; --band: rgba(122, 162, 255, 0.22); --code-bg: #25262a; --focus: #7aa2ff;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 780px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 2.1rem; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.01em; }
+  h2 { font-size: 1.2rem; margin: 0 0 12px; }
+  p { margin: 0 0 12px; }
+  .lead { font-size: 1.1rem; color: var(--muted); margin-bottom: 24px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 0.875rem; }
+  a { color: var(--accent); }
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 0 0 20px; }
+  code, pre { font: 0.875rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+  pre { background: var(--code-bg); padding: 12px 14px; border-radius: 8px; overflow-x: auto; margin: 0 0 12px; }
+  pre code { background: none; padding: 0; }
+
+  /* score scale */
+  .scale { position: relative; height: 14px; border-radius: 7px; margin: 18px 0 6px;
+           background: linear-gradient(90deg, var(--bad), var(--neutral) 50%, var(--good)); }
+  .scale .band { position: absolute; top: -4px; bottom: -4px; background: var(--band); border-radius: 4px; display: none; }
+  .scale .marker { position: absolute; top: -7px; width: 4px; height: 28px; margin-left: -2px; border-radius: 2px;
+                   background: var(--text); display: none; }
+  .scale .marker span { position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+                        font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+  .scale-labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); gap: 8px; }
+  .scale-labels span:nth-child(2) { text-align: center; }
+  .scale-labels span:last-child { text-align: right; }
+
+  /* demo */
+  button { font: inherit; border-radius: 8px; padding: 10px 16px; cursor: pointer; border: 1px solid var(--border);
+           background: var(--surface-2); color: var(--text); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+  button:disabled { opacity: 0.55; cursor: not-allowed; }
+  button:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .linklike { background: none; border: none; padding: 0; color: var(--accent); text-decoration: underline; font-size: 0.875rem; }
+  .progress { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin: 12px 0 6px; }
+  .progress > div { height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
+  label { display: block; font-weight: 600; margin: 14px 0 6px; }
+  label .muted { font-weight: 400; }
+  textarea { width: 100%; min-height: 76px; resize: vertical; font: inherit; color: var(--text); background: var(--bg);
+             border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
+  .examples { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
+  .examples button { padding: 5px 10px; font-size: 0.85rem; border-radius: 999px; }
+  .result { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); display: none; }
+  .scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .score-card { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; }
+  .score-card .big { font-size: 1.8rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .score-card .verdict { font-weight: 600; }
+  .error { color: var(--bad); font-weight: 600; }
+  .hidden { display: none !important; }
+  footer { color: var(--muted); font-size: 0.85rem; text-align: center; margin-top: 28px; }
+  @media (max-width: 520px) {
+    h1 { font-size: 1.7rem; }
+    section { padding: 16px; }
+    .scale-labels { font-size: 0.72rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>SIMPLE</h1>
+    <p class="lead">A reference-free metric for sentence simplification that also says how sure it is.
+      Give it a sentence and a simplification of it; no reference simplification needed.</p>
+  </header>
+
+  <section aria-labelledby="read-title">
+    <h2 id="read-title">Reading the score</h2>
+    <p>SIMPLE returns a score <strong>μ</strong> between −1 and +1 for each (source, simplification) pair:</p>
+    <div class="scale" aria-hidden="true"></div>
+    <div class="scale-labels"><span>−1 unrelated or degenerate text</span><span>0 copy of the source</span><span>+1 successful simplification</span></div>
+    <p class="small muted" style="margin-top:12px">Negative scores flag unsuccessful simplifications, including
+      complexifications. Each score comes with <strong>σ</strong>, the model's own uncertainty: most predictions sit
+      near the minimum of 0.05; a larger σ means the model is less sure, and the example deserves a human look.</p>
+  </section>
+
+  <section aria-labelledby="demo-title">
+    <h2 id="demo-title">Try it in your browser</h2>
+
+    <div id="intro">
+      <p>The demo runs <strong>SIMPLE-small</strong> entirely on your device: nothing you type is sent anywhere.
+        Starting it downloads the model once (<span id="size">≈ 180 MB</span>); your browser keeps it, so later
+        visits start quickly.</p>
+      <div class="row">
+        <button id="load" class="primary" type="button">Load the demo</button>
+        <span id="cached-note" class="small muted hidden">The model is already stored on this device.</span>
+      </div>
+      <p id="load-error" class="error hidden" role="alert"></p>
+    </div>
+
+    <div id="loading" class="hidden" aria-live="polite">
+      <div class="progress" role="progressbar" aria-label="Download progress" aria-valuemin="0" aria-valuemax="100"><div id="bar"></div></div>
+      <p id="status" class="small muted">Starting…</p>
+    </div>
+
+    <div id="demo" class="hidden">
+      <label for="source">Source sentence</label>
+      <textarea id="source" maxlength="2000" placeholder="The original, complex sentence"></textarea>
+      <label for="cand-a">Simplification</label>
+      <textarea id="cand-a" maxlength="2000" placeholder="A simplified version of the source"></textarea>
+      <label for="cand-b">Second simplification <span class="muted">(optional, to compare two candidates)</span></label>
+      <textarea id="cand-b" maxlength="2000" placeholder="Leave empty to score a single simplification"></textarea>
+
+      <p class="small muted" style="margin:12px 0 4px">Examples:</p>
+      <div class="examples" id="examples"></div>
+
+      <div class="row">
+        <button id="score" class="primary" type="button">Score</button>
+        <button id="forget" class="linklike" type="button">Remove the stored model from this device</button>
+      </div>
+
+      <div id="result" class="result" aria-live="polite">
+        <div class="scale" id="result-scale">
+          <div class="band" id="band-a"></div><div class="band" id="band-b"></div>
+          <div class="marker" id="marker-a"><span>A</span></div><div class="marker" id="marker-b"><span>B</span></div>
+        </div>
+        <div class="scale-labels"><span>−1</span><span>0</span><span>+1</span></div>
+        <div class="scores" style="margin-top:14px">
+          <div class="score-card" id="card-a"></div>
+          <div class="score-card hidden" id="card-b"></div>
+        </div>
+        <p id="pref" class="hidden" style="margin-top:12px"></p>
+      </div>
+      <p id="error" class="error hidden" role="alert"></p>
+      <p class="small muted" style="margin-top:16px">This demo uses SIMPLE-small with 8-bit weights; its scores are
+        within about ±0.015 of the full model's. For evaluations, use the Python package below (SIMPLE-large by default).</p>
+    </div>
+    <noscript><p class="error">The demo needs JavaScript.</p></noscript>
+  </section>
+
+  <section aria-labelledby="use-title">
+    <h2 id="use-title">Use it in Python</h2>
+    <pre><code>pip install simple-metric</code></pre>
+    <pre><code>from simple_metric import SIMPLE
+
+metric = SIMPLE.from_pretrained("large")      # or "small", "base"
+out = metric.score(sources, simplifications)
+out.mu, out.sigma, out.mean</code></pre>
+    <p>With 🤗 Evaluate:</p>
+    <pre><code>import evaluate
+
+simple = evaluate.load("mpapucci/simple", "large")
+simple.compute(sources=sources, predictions=simplifications)</code></pre>
+    <p class="small muted">Models: <a href="https://huggingface.co/mpapucci/simple-metric-small" target="_blank" rel="noopener noreferrer">small</a>,
+      <a href="https://huggingface.co/mpapucci/simple-metric-base" target="_blank" rel="noopener noreferrer">base</a>,
+      <a href="https://huggingface.co/mpapucci/simple-metric-large" target="_blank" rel="noopener noreferrer">large</a>.
+      Code and training: <a href="https://github.com/michelepapucci/simple-metric" target="_blank" rel="noopener noreferrer">github.com/michelepapucci/simple-metric</a>.
+      Paper: <em>Rethinking Text Simplification Evaluation as Preference Learning</em> (link coming soon).</p>
+  </section>
+
+  <footer>SIMPLE · MIT License</footer>
+</main>
+<script type="module" src="demo.js"></script>
+</body>
+</html>

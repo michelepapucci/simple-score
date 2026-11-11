@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Model exports, training runs, downloaded or built data (never commit these)
+/hub_export/
+/runs/
+/data/
+*.safetensors
+*.bin
+*.pt
+
+# Editors
+.vscode/
+.idea/
+.DS_Store

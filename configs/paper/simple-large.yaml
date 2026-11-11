@@ -1,0 +1,21 @@
+# SIMPLE-large as trained for the paper (DeBERTa-v3-large).
+# The paper run used 4 GPUs without gradient synchronisation, so the released model is
+# what one GPU learned: batch 8, and each epoch a random quarter of the data. Run this
+# config on ONE GPU (40 GB+; gradient checkpointing on) to reproduce it.
+model:
+  backbone: microsoft/deberta-v3-large
+  max_length: 512
+  gradient_checkpointing: true
+training:
+  epochs: 5
+  batch_size: 8
+  regression_batch_size: 32
+  lr: 1.0e-5
+  lambda_reg: 0.7
+  epoch_fraction: 0.25
+  select_on: monitor:simpeval2022   # recommended for new models: val_inter
+data: ../../data/paper/data.yaml
+monitor:
+  - {path: ../../data/paper/monitor/simpeval2022_pairs.tsv, kind: pairwise, name: simpeval2022}
+  - {path: ../../data/paper/monitor/simpeval2022_ratings.tsv, kind: ratings, name: simpeval2022_ratings}
+output_dir: runs/paper/simple-large
