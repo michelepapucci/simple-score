@@ -71,3 +71,16 @@ third decimal. The one exception is that the beat-rate of base and large can com
 .991 instead of .989. Four SimpEval 2022 "simplifications" are identical to their source;
 for those the copy adversarial is the same input, and the comparison is decided by
 floating-point noise.
+
+```bash
+python reproduce/table3.py                  # Table 3 (Pearson) and Table 9 (Kendall τb)
+python reproduce/table3.py --json out.json  # also save every correlation with its p-value
+```
+
+Table 3 and Table 9 are recomputed from one file, `reproduce/data/table3_scores.csv`. It holds
+the per-pair scores behind the paper's numbers for 2,350 rated pairs: SIMPLE-small/base/large,
+ΔSLE, LENS-SALSA, and the length and readability gains. The script joins it with the human
+ratings and the reference-based metric scores (BLEU, SARI, BERTScore, iBLEU, SAMSA, word length)
+of [metaeval-simplification](https://github.com/feralvam/metaeval-simplification), which it
+downloads; that data is licensed CC BY-NC-SA 4.0, so it is not copied into this repository.
+The script checks every cell against the published tables.
