@@ -31,7 +31,7 @@ from ..scorer import SIMPLE
 from .config import Config
 from .datasets import PairCollator, PairDataset, RegressionCollator, RegressionDataset, pad
 
-logger = logging.getLogger("simple_metric.training")
+logger = logging.getLogger("simple_score.training")
 
 
 # ----------------------------------------------------------------------------- utilities

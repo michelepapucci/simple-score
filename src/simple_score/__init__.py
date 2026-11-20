@@ -1,9 +1,9 @@
-"""SIMPLE: SImplicity Metric via Preference LEarning.
+"""SIMPLE Score: SImplicity Metric via Preference LEarning.
 
 A reference-free learned metric for text simplification. For each (source, candidate)
 pair it returns a quality score ``mu`` in (-1, 1) and the model's uncertainty ``sigma``.
 
-    >>> from simple_metric import SIMPLE
+    >>> from simple_score import SIMPLE
     >>> metric = SIMPLE.from_pretrained("large")
     >>> metric.score(["The feline perched upon the mat."], ["The cat sat on the mat."])
 """

@@ -7,7 +7,7 @@ const TOKENIZERS_VERSION = "0.2.0";
 const ORT_BASE = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/`;
 const TOKENIZERS_URL = `https://cdn.jsdelivr.net/npm/@huggingface/tokenizers@${TOKENIZERS_VERSION}/dist/tokenizers.min.mjs`;
 const MANIFEST_URL = "model/manifest.json";
-const CACHE_PREFIX = "simple-metric-demo-";
+const CACHE_PREFIX = "simple-score-demo-";
 const MAX_TOKENS = 512;
 
 const $ = (id) => document.getElementById(id);
@@ -29,6 +29,12 @@ const EXAMPLES = [
   ["Complexification",
    "The doctor told the patient not to exercise hard for a few weeks.",
    "The physician recommended that the patient refrain from strenuous physical activity for several weeks.", ""],
+  ["Core meaning stripped",
+   "After three weeks of tense negotiations, the city council voted seven to two on Tuesday evening to approve a 4.5 million dollar plan to repair the old stone bridge over the river, which has been closed to traffic since a flood damaged its foundations last spring.",
+   "Three weeks ago it was approved.", ""],
+  ["Semantic degeneration",
+   "The physician recommended that the patient refrain from strenuous physical activity for several weeks.",
+   "The doctor bought a new car last week.", ""],
   ["Compare two candidates",
    "Due to the inclement weather conditions, the municipal authorities decided to postpone the outdoor festival indefinitely.",
    "Because of the bad weather, the city put off the outdoor festival.",
@@ -114,8 +120,8 @@ function phi(x) {
 function verdict(mu) {
   if (mu >= 0.5) return "Successful simplification";
   if (mu >= 0.15) return "Partial simplification";
-  if (mu > -0.15) return "Close to a copy of the source";
-  return "Unsuccessful: complexification, or degenerate text";
+  if (mu >= 0) return "Close to a copy of the source";
+  return "Unrelated, degenerate text or complexification";
 }
 
 function confidence(sigma) {
@@ -203,13 +209,17 @@ function place(which, res) {
   band.style.width = `calc(${pos(res.mu + res.sigma)} - ${pos(res.mu - res.sigma)})`;
 }
 
-function card(which, label, res) {
+function card(which, res) {
+  const letter = which.toUpperCase();
   const el = $(`card-${which}`);
   el.classList.remove("hidden");
   el.innerHTML = "";
   const title = document.createElement("div");
-  title.className = "small muted";
-  title.textContent = label;
+  title.className = "title";
+  const badge = document.createElement("span");
+  badge.className = `badge badge-${which}`;
+  badge.textContent = letter;
+  title.append(badge, `Simplification ${letter}`);
   const big = document.createElement("div");
   big.className = "big";
   big.textContent = `μ = ${res.mu >= 0 ? "+" : "−"}${Math.abs(res.mu).toFixed(3)}`;
@@ -237,17 +247,15 @@ async function onScore() {
     const resA = await scorePair(source, a);
     const resB = b ? await scorePair(source, b) : null;
     $("result").style.display = "block";
-    $("marker-b").querySelector("span").textContent = "B";
-    $("marker-a").querySelector("span").textContent = resB ? "A" : "μ";
     place("a", resA);
     place("b", resB);
-    card("a", resB ? "Simplification A" : "Simplification", resA);
+    card("a", resA);
     if (resB) {
-      card("b", "Simplification B", resB);
+      card("b", resB);
       const p = phi((resA.mu - resB.mu) / Math.sqrt(resA.sigma ** 2 + resB.sigma ** 2));
       $("pref").classList.remove("hidden");
       const pct = p > 0.999 ? "> 99.9%" : p < 0.001 ? "< 0.1%" : `${(100 * p).toFixed(1)}%`;
-      $("pref").textContent = `Probability that A is the better simplification: ${pct} ` +
+      $("pref").textContent = `Probability that A is a better simplification than B: ${pct} ` +
         "(Thurstone's model on the two scores and their uncertainties).";
     } else {
       $("card-b").classList.add("hidden");
@@ -287,7 +295,26 @@ function setupExamples() {
   }
 }
 
+function setupTheme() {
+  const buttons = document.querySelectorAll("[data-theme-choice]");
+  const show = (choice) => buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeChoice === choice)));
+  let current = "auto";
+  try { current = localStorage.getItem("simple-theme") || "auto"; } catch { /* no storage */ }
+  show(current);
+  buttons.forEach((b) => b.addEventListener("click", () => {
+    const choice = b.dataset.themeChoice;
+    if (choice === "auto") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = choice;
+    try {
+      if (choice === "auto") localStorage.removeItem("simple-theme");
+      else localStorage.setItem("simple-theme", choice);
+    } catch { /* no storage: the choice lasts for this visit */ }
+    show(choice);
+  }));
+}
+
 async function init() {
+  setupTheme();
   setupExamples();
   $("score").addEventListener("click", onScore);
   $("forget").addEventListener("click", async () => {

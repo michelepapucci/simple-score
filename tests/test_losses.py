@@ -2,7 +2,7 @@ import math
 
 import torch
 
-from simple_metric.losses import (
+from simple_score.losses import (
     bradley_terry_loss,
     gaussian_nll_loss,
     preference_probability,

@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from simple_metric import SIMPLE
-from simple_metric.cli import main as cli_main
-from simple_metric.training import config_from_dict, train
+from simple_score import SIMPLE
+from simple_score.cli import main as cli_main
+from simple_score.training import config_from_dict, train
 
 SENTS = [
     ("the old man went to the store and bought some bread", "the man bought bread"),

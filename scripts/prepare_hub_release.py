@@ -5,14 +5,14 @@ Every repository this script creates is PRIVATE, and it refuses to upload to a r
 that is public. Making anything public is a manual step on the Hub (Settings -> Change
 visibility) once the release is approved. Needs `huggingface-cli login` with a write token.
 
-    # write README.md model cards into hub_export/simple-metric-{small,base,large}
+    # write README.md model cards into hub_export/simple-score-{small,base,large}
     python scripts/prepare_hub_release.py --cards
 
     # upload the converted models (writes the cards first)
     python scripts/prepare_hub_release.py --upload-models
 
-    # upload the Space: a static page with the in-browser demo, plus simple.py for
-    # `evaluate.load("mpapucci/simple")`. Export the browser model first:
+    # upload the Space: a static page with the in-browser demo, plus simple-score.py for
+    # `evaluate.load("mpapucci/simple-score")`. Export the browser model first:
     #   python scripts/export_onnx.py --model small --output-dir hub_export/onnx-small
     python scripts/prepare_hub_release.py --upload-space
 
@@ -30,7 +30,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 NAMESPACE = "mpapucci"
-SPACE_ID = f"{NAMESPACE}/simple"
+SPACE_ID = f"{NAMESPACE}/simple-score"
 
 MODELS = {
     "small": dict(backbone="microsoft/deberta-v3-small", lr="2e-5", batch=32, fraction="all",
@@ -53,7 +53,7 @@ CARD = """\
 license: mit
 language:
   - en
-library_name: simple-metric
+library_name: simple-score
 base_model: {backbone}
 tags:
   - text-simplification
@@ -64,7 +64,7 @@ tags:
 
 # SIMPLE-{size}
 
-**SIMPLE** (SImplicity Metric via Preference LEarning) is a reference-free learned metric
+**SIMPLE Score** (SImplicity Metric via Preference LEarning) is a reference-free learned metric
 for sentence simplification. For a source sentence and a candidate simplification it returns
 
 - a **score** `mu` in (-1, 1): +1 = highly successful simplification, 0 = verbatim copy of
@@ -78,11 +78,11 @@ This is the `{size}` model ({backbone} cross-encoder). Sizes: small, base, large
 ## Usage
 
 ```bash
-pip install simple-metric
+pip install simple-score
 ```
 
 ```python
-from simple_metric import SIMPLE
+from simple_score import SIMPLE
 
 metric = SIMPLE.from_pretrained("{size}")          # = "{repo}"
 out = metric.score(
@@ -92,7 +92,7 @@ out = metric.score(
 print(out.mu, out.sigma)
 ```
 
-From the command line: `simple-metric score --model {size} --sources src.txt --candidates sys.txt`.
+From the command line: `simple-score score --model {size} --sources src.txt --candidates sys.txt`.
 With Hugging Face `evaluate`: `evaluate.load("{space}", "{size}")`.
 
 ## Results
@@ -135,7 +135,7 @@ A cross-encoder over `[CLS] source [SEP] candidate [SEP]` with two linear heads,
 Hyperparameters: AdamW, learning rate {lr}, batch {batch}, 5 epochs over {fraction} of the
 pairs per epoch, linear warmup over 6% of steps, max length 512. The training code and a
 recipe to rebuild the data from the original sources are in the
-[simple-metric repository](https://github.com/michelepapucci/simple-metric).
+[simple-score repository](https://github.com/michelepapucci/simple-score).
 
 ## Limitations
 
@@ -160,15 +160,15 @@ def _ensure_private(api, repo_id: str, repo_type: str = "model", **create_kwargs
 
 def write_cards(export_dir: Path) -> None:
     for size, info in MODELS.items():
-        folder = export_dir / f"simple-metric-{size}"
+        folder = export_dir / f"simple-score-{size}"
         if not (folder / "model.safetensors").exists():
             raise SystemExit(f"Missing {folder}; run scripts/convert_checkpoint.py first.")
-        repo = f"{NAMESPACE}/simple-metric-{size}"
+        repo = f"{NAMESPACE}/simple-score-{size}"
         (folder / "README.md").write_text(CARD.format(size=size, repo=repo, space=SPACE_ID, **info))
         print(f"wrote {folder / 'README.md'}")
 
 
-SPACE_FILES = ("README.md", "index.html", "demo.js", "simple.py")
+SPACE_FILES = ("README.md", "index.html", "demo.js", "simple-score.py")
 # Size of onnxruntime-web's WebAssembly runtime (ort-wasm-simd-threaded.wasm, 1.31.1), which
 # the browser downloads from the CDN; shown to visitors as part of the demo's download size.
 ORT_WASM_BYTES = 14_848_852
@@ -234,9 +234,9 @@ def main() -> None:
     api = HfApi()
     if args.upload_models:
         for size in MODELS:
-            repo = f"{NAMESPACE}/simple-metric-{size}"
+            repo = f"{NAMESPACE}/simple-score-{size}"
             _ensure_private(api, repo)
-            api.upload_folder(repo_id=repo, folder_path=args.export_dir / f"simple-metric-{size}",
+            api.upload_folder(repo_id=repo, folder_path=args.export_dir / f"simple-score-{size}",
                               commit_message="Upload SIMPLE checkpoint")
             print(f"uploaded {repo} (private)")
     if args.upload_space:

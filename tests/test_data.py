@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from simple_metric.data import DataFormatError, build_training_data, read_records
-from simple_metric.data.builders import pairs_from_graded, pairs_from_ratings, rating_targets
+from simple_score.data import DataFormatError, build_training_data, read_records
+from simple_score.data.builders import pairs_from_graded, pairs_from_ratings, rating_targets
 
 PARALLEL = [
     ("the old man went to the store and bought some bread", "the man bought bread"),

@@ -1,6 +1,6 @@
 # A runnable toy configuration showing every data kind. The sentences are made up.
-#   simple-metric build-data --config examples/toy.yaml --dry-run
-#   simple-metric train --config examples/toy.yaml --set model.backbone=microsoft/deberta-v3-small
+#   simple-score build-data --config examples/toy.yaml --dry-run
+#   simple-score train --config examples/toy.yaml --set model.backbone=microsoft/deberta-v3-small
 model:
   backbone: microsoft/deberta-v3-base
   max_length: 128

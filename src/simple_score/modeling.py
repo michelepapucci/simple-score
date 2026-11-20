@@ -51,7 +51,7 @@ class SimpleConfig:
     max_length: int = 512
     model_type: str = "simple"
     format_version: int = FORMAT_VERSION
-    simple_metric_version: str = __version__
+    simple_score_version: str = __version__
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -63,8 +63,8 @@ class SimpleConfig:
         if cfg.format_version > FORMAT_VERSION:
             raise ValueError(
                 f"This checkpoint uses format version {cfg.format_version}, but this "
-                f"simple-metric ({__version__}) reads up to {FORMAT_VERSION}. "
-                "Upgrade with `pip install -U simple-metric`."
+                f"simple-score ({__version__}) reads up to {FORMAT_VERSION}. "
+                "Upgrade with `pip install -U simple-score`."
             )
         return cfg
 
@@ -175,7 +175,7 @@ class SimpleModel(nn.Module):
 
         directory = Path(directory)
         directory.mkdir(parents=True, exist_ok=True)
-        self.config.simple_metric_version = __version__
+        self.config.simple_score_version = __version__
         self.config.save(directory)
         save_model(self, str(directory / WEIGHTS_NAME), metadata={"format": "pt"})
         if tokenizer is not None:

@@ -24,7 +24,7 @@ repositories and reads Newsela from your licensed copy. It writes plain TSV file
 | `simpeval_past_ratings.tsv` | ratings (0–100) | SimpEval PAST, mean of 5 ratings per output |
 | `monitor/simpeval2022_*.tsv` | monitor | SimpEval 2022 pairs / ratings (the Table 2 test set) |
 
-`simple-metric build-data --config configs/paper/simple-base.yaml --dry-run` reproduces the
+`simple-score build-data --config configs/paper/simple-base.yaml --dry-run` reproduces the
 original build's pair counts by type: 167,469 original-simplification, mirror and
 random-sentence pairs each, and 41,713 inter-simplification pairs. Human-preference pairs
 are 20,233, against 20,257 in the original build. One SimpEval PAST output is empty; the

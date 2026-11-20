@@ -4,11 +4,11 @@ from __future__ import annotations
 
 HUB_NAMESPACE = "mpapucci"
 
-#: Short aliases accepted by :meth:`simple_metric.SIMPLE.from_pretrained`.
+#: Short aliases accepted by :meth:`simple_score.SIMPLE.from_pretrained`.
 MODEL_ALIASES = {
-    "small": f"{HUB_NAMESPACE}/simple-metric-small",
-    "base": f"{HUB_NAMESPACE}/simple-metric-base",
-    "large": f"{HUB_NAMESPACE}/simple-metric-large",
+    "small": f"{HUB_NAMESPACE}/simple-score-small",
+    "base": f"{HUB_NAMESPACE}/simple-score-base",
+    "large": f"{HUB_NAMESPACE}/simple-score-large",
 }
 
 DEFAULT_MODEL = "large"

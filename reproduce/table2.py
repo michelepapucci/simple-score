@@ -16,7 +16,7 @@ Reports, on SimpEval 2022:
   * score distributions: genuine, reversed (complexification) and adversarial mu
 
     python reproduce/table2.py --model large            # released model from the Hub
-    python reproduce/table2.py --model hub_export/simple-metric-large
+    python reproduce/table2.py --model hub_export/simple-score-large
 """
 
 from __future__ import annotations
@@ -31,8 +31,8 @@ from pathlib import Path
 
 import numpy as np
 
-from simple_metric import SIMPLE
-from simple_metric.training.trainer import pearson, spearman
+from simple_score import SIMPLE
+from simple_score.training.trainer import pearson, spearman
 
 SIMPEVAL_URL = "https://raw.githubusercontent.com/Yao-Dou/LENS/master/data/simpeval_2022.csv"
 ASSET_RATINGS_URL = ("https://raw.githubusercontent.com/facebookresearch/asset/main/"

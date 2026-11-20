@@ -1,6 +1,6 @@
-# SIMPLE: SImplicity Metric via Preference LEarning
+# SIMPLE Score: SImplicity Metric via Preference LEarning
 
-SIMPLE is a **reference-free** learned metric for sentence simplification. For each
+SIMPLE Score is a **reference-free** learned metric for sentence simplification. For each
 source sentence and candidate simplification it returns:
 
 - **`mu`**, a quality score in (-1, 1):
@@ -15,25 +15,25 @@ source sentence and candidate simplification it returns:
 SIMPLE is a DeBERTa-v3 cross-encoder trained on preferences between simplifications
 (Thurstone's model) and calibrated on human quality ratings. This repository has:
 
-- the `simple-metric` Python package and command line tool;
+- the `simple-score` Python package and command line tool;
 - the full training code, which reads plain data files (no dataset-specific code needed);
 - the recipe and configs used to train the paper's models;
 - scripts to reproduce the paper's results.
 
 | Model | Hub | SimpEval 2022 pairwise acc. | Pearson | Spearman |
 |---|---|---|---|---|
-| SIMPLE-small | `mpapucci/simple-metric-small` | 0.738 | 0.414 | 0.407 |
-| SIMPLE-base | `mpapucci/simple-metric-base` | 0.781 | 0.427 | 0.448 |
-| SIMPLE-large | `mpapucci/simple-metric-large` | 0.814 | 0.391 | 0.454 |
+| SIMPLE-small | `mpapucci/simple-score-small` | 0.738 | 0.414 | 0.407 |
+| SIMPLE-base | `mpapucci/simple-score-base` | 0.781 | 0.427 | 0.448 |
+| SIMPLE-large | `mpapucci/simple-score-large` | 0.814 | 0.391 | 0.454 |
 
-**Try it without installing anything:** the [SIMPLE Space](https://huggingface.co/spaces/mpapucci/simple)
+**Try it without installing anything:** the [SIMPLE Score Space](https://huggingface.co/spaces/mpapucci/simple-score)
 runs SIMPLE-small in your browser. The model is downloaded only when you start the demo.
 
 ## Installation
 
 ```bash
-pip install simple-metric            # scoring
-pip install "simple-metric[train]"   # + training
+pip install simple-score            # scoring
+pip install "simple-score[train]"   # + training
 ```
 
 Python ≥ 3.10 is required, and the package works with transformers 4.x and 5.x.
@@ -41,7 +41,7 @@ Python ≥ 3.10 is required, and the package works with transformers 4.x and 5.x
 ## Scoring
 
 ```python
-from simple_metric import SIMPLE
+from simple_score import SIMPLE
 
 metric = SIMPLE.from_pretrained("large")   # "small", "base", "large", a Hub id or a local dir
 out = metric.score(
@@ -62,16 +62,16 @@ The model downloads on first use and runs on GPU when one is available
 From the command line:
 
 ```bash
-simple-metric score --model large --sources src.txt --candidates system.txt --output scores.jsonl
-simple-metric score --model base --input outputs.csv   # any file with source + candidate columns
+simple-score score --model large --sources src.txt --candidates system.txt --output scores.jsonl
+simple-score score --model base --input outputs.csv   # any file with source + candidate columns
 ```
 
 With [🤗 Evaluate](https://huggingface.co/docs/evaluate):
 
 ```python
 import evaluate
-simple = evaluate.load("mpapucci/simple", "large")
-simple.compute(sources=sources, predictions=predictions)   # {"simple", "scores", "sigmas"}
+simple_score = evaluate.load("mpapucci/simple-score", "large")
+simple_score.compute(sources=sources, predictions=predictions)   # {"simple_score", "scores", "sigmas"}
 ```
 
 ### Reading the scores
@@ -114,7 +114,7 @@ score between −0.8 and −0.4, and unrelated sentences score −1.
 ### Quick start, no config file
 
 ```bash
-simple-metric train \
+simple-score train \
     --parallel my_corpus.tsv \
     --ratings my_ratings.csv --rating-scale 1 5 \
     --backbone microsoft/deberta-v3-base \
@@ -148,10 +148,10 @@ output_dir: runs/my-simple
 ```
 
 ```bash
-simple-metric build-data --config my_config.yaml --dry-run   # counts of every derived pair type
-simple-metric train --config my_config.yaml
-simple-metric train --config my_config.yaml --set training.lr=2e-5   # override any value
-torchrun --nproc_per_node=4 -m simple_metric.cli train --config my_config.yaml   # multi-GPU
+simple-score build-data --config my_config.yaml --dry-run   # counts of every derived pair type
+simple-score train --config my_config.yaml
+simple-score train --config my_config.yaml --set training.lr=2e-5   # override any value
+torchrun --nproc_per_node=4 -m simple_score.cli train --config my_config.yaml   # multi-GPU
 ```
 
 `build-data` without `--dry-run` writes the derived pairs as JSONL, so you can check exactly
@@ -162,13 +162,13 @@ what the model will see. A run's output directory holds:
 - `metrics.jsonl`, `data_stats.json` and the resolved `config.json`.
 
 `examples/` holds a runnable toy configuration. All options, with defaults, are in
-[`src/simple_metric/training/config.py`](src/simple_metric/training/config.py) and
-[`src/simple_metric/data/builders.py`](src/simple_metric/data/builders.py).
+[`src/simple_score/training/config.py`](src/simple_score/training/config.py) and
+[`src/simple_score/data/builders.py`](src/simple_score/data/builders.py).
 
 The same steps from Python:
 
 ```python
-from simple_metric.training import config_from_dict, train
+from simple_score.training import config_from_dict, train
 cfg = config_from_dict({"model": {"backbone": "microsoft/deberta-v3-base"},
                         "data": {"parallel": ["pairs.tsv"]}, "output_dir": "runs/x"})
 train(cfg)
@@ -181,8 +181,8 @@ train(cfg)
 python recipes/paper/build_paper_data.py --newsela-dir /path/to/newsela_data_share-20150302
 
 # 2. Train (see the notes in each config)
-simple-metric train --config configs/paper/simple-base.yaml
-simple-metric train --config configs/ablations/bt-mse.yaml    # Appendix A ablations
+simple-score train --config configs/paper/simple-base.yaml
+simple-score train --config configs/ablations/bt-mse.yaml    # Appendix A ablations
 
 # 3. Evaluate: SIMPLE rows of Table 2 (and Table 5)
 python reproduce/table2.py --model large

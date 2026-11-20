@@ -156,7 +156,7 @@ def rescore_simple(scores_path: Path, cache: Path) -> None:
     """Recompute the SIMPLE and length/readability-gain columns of the scores file."""
     import textstat
 
-    from simple_metric import SIMPLE
+    from simple_score import SIMPLE
 
     def awl(t):
         w = [x for x in t.split() if x.isalpha()]

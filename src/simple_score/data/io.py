@@ -93,7 +93,7 @@ def _read_file(path: Path) -> list[dict[str, Any]]:
         try:
             import pyarrow.parquet as pq
         except ImportError as e:  # pragma: no cover
-            raise ImportError("Reading Parquet needs `pip install simple-metric[data]`.") from e
+            raise ImportError("Reading Parquet needs `pip install simple-score[data]`.") from e
         return pq.read_table(path).to_pylist()
     raise DataFormatError(
         f"Don't know how to read {path} (suffix {suffix!r}). Use .jsonl, .json, .csv, "
@@ -117,7 +117,7 @@ def _read_hf(spec: dict) -> list[dict]:
     try:
         from datasets import load_dataset
     except ImportError as e:  # pragma: no cover
-        raise ImportError("Loading Hub datasets needs `pip install simple-metric[data]`.") from e
+        raise ImportError("Loading Hub datasets needs `pip install simple-score[data]`.") from e
     ds = load_dataset(spec["hf"], spec.get("config"), split=spec.get("split", "train"))
     return ds.to_list()
 

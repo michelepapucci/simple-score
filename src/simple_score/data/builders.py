@@ -24,7 +24,7 @@ Derived from every original-simplification pair ``(o: s > o)``:
 * mirror pair ``(s: s > o)``: given the simple sentence, copying it beats complexifying it;
 * random-sentence pair ``(o: s > r)`` with ``r`` an unrelated source sentence.
 
-Regression anchors (copies and degenerate rewrites, see :mod:`simple_metric.data.augment`) are
+Regression anchors (copies and degenerate rewrites, see :mod:`simple_score.data.augment`) are
 drawn from the training sources after the train/validation split.
 
 Pair types in the output: ``original``, ``mirror``, ``random_sentence``, ``inter`` (graded),

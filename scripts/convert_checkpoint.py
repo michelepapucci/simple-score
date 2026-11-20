@@ -13,7 +13,7 @@ exceeds ``--tolerance``.
     python scripts/convert_checkpoint.py \
         --legacy /path/to/large_exp15/best \
         --tokenizer /path/to/tokenizer_dir \
-        --output hub_export/simple-metric-large \
+        --output hub_export/simple-score-large \
         --check checks.jsonl
 """
 
@@ -27,8 +27,8 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoModel, AutoTokenizer
 
-from simple_metric import SIMPLE, SimpleConfig, SimpleModel
-from simple_metric.modeling import _encoder_config_to_dict
+from simple_score import SIMPLE, SimpleConfig, SimpleModel
+from simple_score.modeling import _encoder_config_to_dict
 
 LEGACY_SIGMA_FLOOR = 0.05
 

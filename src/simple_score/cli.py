@@ -1,4 +1,4 @@
-"""Command line interface: ``simple-metric {score,train,build-data}``."""
+"""Command line interface: ``simple-score {score,train,build-data}``."""
 
 from __future__ import annotations
 
@@ -115,8 +115,8 @@ def _add_data_flags(p: argparse.ArgumentParser) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="simple-metric",
-        description="SIMPLE: reference-free text simplification metric with uncertainty.")
+        prog="simple-score",
+        description="SIMPLE Score: reference-free text simplification metric with uncertainty.")
     sub = parser.add_subparsers(dest="command", required=True)
 
     s = sub.add_parser("score", help="Score simplifications against their sources.")

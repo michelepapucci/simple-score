@@ -1,6 +1,6 @@
 """Score a few simplifications with a released SIMPLE model."""
 
-from simple_metric import SIMPLE
+from simple_score import SIMPLE
 
 sources = [
     "The physician recommended that the patient refrain from strenuous physical activity.",

@@ -1,6 +1,6 @@
 """High-level scoring API.
 
->>> from simple_metric import SIMPLE
+>>> from simple_score import SIMPLE
 >>> metric = SIMPLE.from_pretrained("large")
 >>> out = metric.score(["The cat perched upon the mat."], ["The cat sat on the mat."])
 >>> out.mu, out.sigma

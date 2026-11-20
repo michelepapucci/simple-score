@@ -1,7 +1,7 @@
 import torch
 
-from simple_metric import SIMPLE, SimpleModel
-from simple_metric.hub import resolve_model_name
+from simple_score import SIMPLE, SimpleModel
+from simple_score.hub import resolve_model_name
 
 
 def test_output_ranges(tiny_model, tokenizer):
@@ -36,6 +36,6 @@ def test_scorer_order_and_batching(tmp_path, tiny_model, tokenizer):
 
 
 def test_aliases():
-    assert resolve_model_name("large") == "mpapucci/simple-metric-large"
-    assert resolve_model_name("SIMPLE-base") == "mpapucci/simple-metric-base"
+    assert resolve_model_name("large") == "mpapucci/simple-score-large"
+    assert resolve_model_name("SIMPLE-base") == "mpapucci/simple-score-base"
     assert resolve_model_name("someone/other") == "someone/other"

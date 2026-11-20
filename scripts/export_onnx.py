@@ -26,8 +26,8 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from simple_metric.modeling import SimpleModel, load_tokenizer, resolve_checkpoint_dir
-from simple_metric.training.trainer import pearson, spearman
+from simple_score.modeling import SimpleModel, load_tokenizer, resolve_checkpoint_dir
+from simple_score.training.trainer import pearson, spearman
 
 ROOT = Path(__file__).resolve().parent.parent
 

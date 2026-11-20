@@ -3,9 +3,9 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "simple-metric"
+name = "simple-score"
 dynamic = ["version"]
-description = "SIMPLE: a reference-free learned metric for text simplification that also reports its own uncertainty."
+description = "SIMPLE Score: a reference-free learned metric for text simplification that also reports its own uncertainty."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -36,14 +36,14 @@ data = ["pyarrow", "datasets"]
 dev = ["pytest", "ruff", "build", "pyyaml>=6.0", "sentencepiece", "protobuf"]
 
 [project.scripts]
-simple-metric = "simple_metric.cli:main"
+simple-score = "simple_score.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/michelepapucci/simple-metric"
+Homepage = "https://github.com/michelepapucci/simple-score"
 Models = "https://huggingface.co/mpapucci"
 
 [tool.setuptools.dynamic]
-version = { attr = "simple_metric._version.__version__" }
+version = { attr = "simple_score._version.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]

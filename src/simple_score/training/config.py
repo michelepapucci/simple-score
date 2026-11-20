@@ -55,7 +55,7 @@ class TrainingConfig:
 class Config:
     model: ModelConfig = field(default_factory=ModelConfig)
     training: TrainingConfig = field(default_factory=TrainingConfig)
-    #: the data spec (see simple_metric.data.builders) or a path to a YAML file with it
+    #: the data spec (see simple_score.data.builders) or a path to a YAML file with it
     data: Any = field(default_factory=dict)
     #: held-out sets reported every epoch: [{path, kind: pairwise|ratings, name, scale}]
     monitor: list = field(default_factory=list)
@@ -73,7 +73,7 @@ def _load_yaml(path: Path) -> dict:
     try:
         import yaml
     except ImportError as e:  # pragma: no cover
-        raise ImportError("YAML configs need `pip install simple-metric[train]`.") from e
+        raise ImportError("YAML configs need `pip install simple-score[train]`.") from e
     with path.open(encoding="utf-8") as f:
         return yaml.safe_load(f) or {}
 

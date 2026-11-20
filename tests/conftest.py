@@ -46,7 +46,7 @@ def tokenizer():
 
 @pytest.fixture()
 def tiny_model(tokenizer):
-    from simple_metric.modeling import SimpleConfig, SimpleModel, _encoder_config_to_dict
+    from simple_score.modeling import SimpleConfig, SimpleModel, _encoder_config_to_dict
 
     torch.manual_seed(0)
     cfg = SimpleConfig(encoder=_encoder_config_to_dict(make_encoder_config(len(tokenizer))),

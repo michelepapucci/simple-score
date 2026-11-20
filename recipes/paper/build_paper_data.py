@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rebuild the training data of the paper's SIMPLE models in simple-metric's generic format.
+"""Rebuild the training data of the paper's SIMPLE models in simple-score's generic format.
 
 Public sources are downloaded from their original repositories; Newsela is read from
 your own licensed copy (``--newsela-dir``; it cannot be redistributed). The script writes
@@ -15,7 +15,7 @@ plain TSV files plus ``data.yaml`` (the data spec) into ``--output-dir``:
 
 Then train with, e.g.:
 
-    simple-metric train --config configs/paper/simple-base.yaml
+    simple-score train --config configs/paper/simple-base.yaml
 
 Sources:
   ASSET (Alva-Manchego et al., 2020)        github.com/facebookresearch/asset
@@ -203,7 +203,7 @@ def simpeval_2022(raw: Path) -> tuple[list[tuple], list[tuple]]:
 
 
 DATA_YAML = """\
-# Training data of the paper's SIMPLE models, in simple-metric's generic format.
+# Training data of the paper's SIMPLE models, in simple-score's generic format.
 # Written by recipes/paper/build_paper_data.py. Paths are relative to this file.
 parallel:
   - {{path: asset_valid_parallel.tsv, name: asset-valid}}
