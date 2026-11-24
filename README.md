@@ -162,8 +162,8 @@ what the model will see. A run's output directory holds:
 - `metrics.jsonl`, `data_stats.json` and the resolved `config.json`.
 
 `examples/` holds a runnable toy configuration. All options, with defaults, are in
-[`src/simple_score/training/config.py`](src/simple_score/training/config.py) and
-[`src/simple_score/data/builders.py`](src/simple_score/data/builders.py).
+[`src/simple_score/training/config.py`](https://github.com/michelepapucci/simple-score/blob/master/src/simple_score/training/config.py) and
+[`src/simple_score/data/builders.py`](https://github.com/michelepapucci/simple-score/blob/master/src/simple_score/data/builders.py).
 
 The same steps from Python:
 
@@ -189,7 +189,7 @@ python reproduce/table2.py --model large
 ```
 
 The recipe rebuilds the paper's training pairs; the counts match the original build. See
-[`recipes/paper/README.md`](recipes/paper/README.md) for the details and for how the
+[`recipes/paper/README.md`](https://github.com/michelepapucci/simple-score/blob/master/recipes/paper/README.md) for the details and for how the
 paper's runs map to the configs.
 
 ## Citation
